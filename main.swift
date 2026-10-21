@@ -473,8 +473,63 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.appearance = NSAppearance(named: .darkAqua)
         window.title = "Glowpad"
         window.center()
+        window.setFrameAutosaveName("Main") // reopen where it was last left
         window.makeKeyAndOrderFront(nil)
+        NSApp.mainMenu = mainMenu()
         NSApp.activate(ignoringOtherApps: true)
+    }
+
+    /// The standard app, Edit and Window menus, so the usual shortcuts (⌘Q, ⌘H, ⌘W, ⌘M…) work.
+    func mainMenu() -> NSMenu {
+        func item(_ title: String, _ action: Selector?, _ key: String = "", _ mods: NSEvent.ModifierFlags = .command) -> NSMenuItem {
+            let i = NSMenuItem(title: title, action: action, keyEquivalent: key)
+            i.keyEquivalentModifierMask = mods
+            return i
+        }
+        func submenu(_ title: String, _ items: [NSMenuItem]) -> NSMenuItem {
+            let menu = NSMenu(title: title)
+            items.forEach(menu.addItem)
+            let top = NSMenuItem(title: title, action: nil, keyEquivalent: "")
+            top.submenu = menu
+            return top
+        }
+
+        let services = NSMenu(title: "Services")
+        NSApp.servicesMenu = services
+        let servicesItem = item("Services", nil)
+        servicesItem.submenu = services
+
+        let appMenu = submenu("Glowpad", [
+            item("About Glowpad", #selector(NSApplication.orderFrontStandardAboutPanel(_:))),
+            .separator(),
+            servicesItem,
+            .separator(),
+            item("Hide Glowpad", #selector(NSApplication.hide(_:)), "h"),
+            item("Hide Others", #selector(NSApplication.hideOtherApplications(_:)), "h", [.command, .option]),
+            item("Show All", #selector(NSApplication.unhideAllApplications(_:))),
+            .separator(),
+            item("Quit Glowpad", #selector(NSApplication.terminate(_:)), "q"),
+        ])
+        let editMenu = submenu("Edit", [
+            item("Undo", Selector(("undo:")), "z"),
+            item("Redo", Selector(("redo:")), "z", [.command, .shift]),
+            .separator(),
+            item("Cut", #selector(NSText.cut(_:)), "x"),
+            item("Copy", #selector(NSText.copy(_:)), "c"),
+            item("Paste", #selector(NSText.paste(_:)), "v"),
+            item("Select All", #selector(NSText.selectAll(_:)), "a"),
+        ])
+        let windowMenu = submenu("Window", [
+            item("Minimize", #selector(NSWindow.performMiniaturize(_:)), "m"),
+            item("Close", #selector(NSWindow.performClose(_:)), "w"),
+            .separator(),
+            item("Bring All to Front", #selector(NSApplication.arrangeInFront(_:))),
+        ])
+        NSApp.windowsMenu = windowMenu.submenu
+
+        let main = NSMenu()
+        [appMenu, editMenu, windowMenu].forEach(main.addItem)
+        return main
     }
 
     func contentSize() -> NSSize { host.sizeThatFits(in: NSSize(width: 380, height: 10_000)) }
