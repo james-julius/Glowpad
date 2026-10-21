@@ -438,9 +438,14 @@ struct SliderRow: View {
     }
 }
 
+/// Drags the window only from empty background, so sliders and buttons keep their clicks.
+final class DragBackgroundView: NSVisualEffectView {
+    override func mouseDown(with event: NSEvent) { window?.performDrag(with: event) }
+}
+
 struct VisualEffect: NSViewRepresentable {
     func makeNSView(context: Context) -> NSVisualEffectView {
-        let v = NSVisualEffectView()
+        let v = DragBackgroundView()
         v.material = .hudWindow
         v.blendingMode = .behindWindow
         v.state = .active
@@ -463,7 +468,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.styleMask = [.titled, .closable, .miniaturizable, .fullSizeContentView]
         window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden
-        window.isMovableByWindowBackground = true
         window.isOpaque = false
         window.backgroundColor = .clear
         window.appearance = NSAppearance(named: .darkAqua)
