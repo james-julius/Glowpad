@@ -1,18 +1,23 @@
 # Glowpad
 
-A tiny macOS app for the PS5 DualSense light bar. Turn it off, pick a solid colour, or run an animation — over Bluetooth or USB, no drivers.
+**Control the PS5 DualSense light bar from your Mac.** Turn the LED off, pick any RGB colour, or run an animation, over Bluetooth or USB. No drivers, no Steam, no PlayStation app.
+
+![Glowpad on macOS](docs/screenshot.png)
+
+[**⬇ Download for macOS**](../../releases/latest)
 
 **Modes:** Off · Solid · Breathe · Rainbow · Police · Fire
 
 - Brightness and speed controls, plus the centre player LED on/off
 - Kills the blue "just connected" glow
 - Remembers your setting and re-applies it every time the controller connects (while Glowpad is open)
-- Works with the DualSense and DualSense Edge
+- Works with the DualSense and DualSense Edge (PS5 controllers)
+- Turn off the PS5 controller light when gaming on a Mac or just to save battery
 - One Swift file, no dependencies
 
 ## Install
 
-Download `Glowpad.zip` from [Releases](../../releases), unzip, and drag `Glowpad.app` to Applications.
+Download `Glowpad.zip` from [Releases](../../releases/latest), unzip, and drag `Glowpad.app` to Applications.
 
 The app is ad-hoc signed, not notarized, so the first launch is blocked by Gatekeeper. Either right-click → **Open**, or run:
 

@@ -136,9 +136,9 @@ final class LightModel: ObservableObject {
             let c = NSColor(hue: phase.truncatingRemainder(dividingBy: 1), saturation: 1, brightness: brightness, alpha: 1)
             return RGB(r: Double(c.redComponent), g: Double(c.greenComponent), b: Double(c.blueComponent))
         case .police:
-            let step = Int(phase * 8) % 8 // red flash ×2, blue flash ×2
-            if step % 2 != 0 { return .black }
-            return step < 4 ? RGB(r: brightness) : RGB(b: brightness)
+            let half = (phase * 4).truncatingRemainder(dividingBy: 2) // red, then blue, alternating
+            if half.truncatingRemainder(dividingBy: 1) > 0.75 { return .black } // short gap between flashes
+            return half < 1 ? RGB(r: brightness) : RGB(b: brightness)
         case .fire:
             return RGB(r: fireLevel, g: fireLevel * 0.28).scaled(brightness)
         }
